@@ -1,0 +1,46 @@
+server:
+  port: 9527
+
+spring:
+  application:
+    name: cloud-gateway-9527-test
+
+  cloud:
+    gateway:
+      routes:
+        - id: payment_route
+          uri: lb://CLOUD-PROVIDER-SERVICES
+          predicates:
+            - Path=/payment/**
+            - After=2021-08-02T14:39:59.566+08:00[Asia/Shanghai]
+            - Cookie=USER,\d+
+            - Header=content-encoding,gzip
+            - Method=get
+        - id: payment_route2
+          uri: lb://CLOUD-PROVIDER-SERVICES
+          predicates:
+            - Path=/payment/lb/**
+        - id: guoji
+          uri: http://news.baidu.com/guoji
+          predicates:
+            - Path=/guoji
+        - id: bilibili
+          uri: https://www.bilibili.com/
+          predicates:
+            - Path=/bilibili
+        - id: migu
+          uri: http://220.178.78.136:8080/admin
+          predicates:
+            - Path=/admin
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: cloud-gateway-service
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+
